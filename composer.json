@@ -1,0 +1,24 @@
+{
+    "name": "bentools/simple-cli",
+    "description": "A very lightweight CLI helper with almost no dependency.",
+    "type": "library",
+    "require": {
+        "php": ">= 7.1",
+        "kevinlebrun/colors.php": "^1.0"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Beno!t POLASZEK",
+            "email": "bpolaszek@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "BenTools\\SimpleCli\\": "src"
+        },
+        "files": [
+            "src/functions.php"
+        ]
+    }
+}
