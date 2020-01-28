@@ -30,9 +30,7 @@ final class SimpleCli implements \Countable
 
     public function success(string $message, bool $exit = false): void
     {
-        $this->newLine();
-        $this->write($this->text('[OK] '.$message)->white()->bold()->highlight('green'));
-        $this->newLine();
+        $this->writeLn($this->text('[OK] '.$message)->white()->bold()->highlight('green'));
 
         if ($exit) {
             exit(0);
@@ -41,9 +39,7 @@ final class SimpleCli implements \Countable
 
     public function error(string $message, bool $exit = false): void
     {
-        $this->newLine();
-        $this->write($this->text('[Error] '.$message)->white()->bold()->highlight('red'));
-        $this->newLine();
+        $this->writeLn($this->text('[Error] '.$message)->white()->bold()->highlight('red'));
 
         if ($exit) {
             exit(1);
@@ -52,9 +48,7 @@ final class SimpleCli implements \Countable
 
     public function warning(string $message): void
     {
-        $this->newLine();
-        $this->write($this->text('[Warning] '.$message)->yellow()->bold());
-        $this->newLine();
+        $this->writeLn($this->text('[Warning] '.$message)->yellow()->bold());
     }
 
     public function write(string $text): void
@@ -64,7 +58,7 @@ final class SimpleCli implements \Countable
 
     public function writeLn(string $text): void
     {
-        echo \PHP_EOL.$text;
+        echo $text.\PHP_EOL;
     }
 
     public function newLine(int $nb = 1): void
@@ -102,7 +96,7 @@ final class SimpleCli implements \Countable
 
     public function ask(string $question, $default = null)
     {
-        $this->writeLn(\rtrim($question).' ');
+        $this->write(\rtrim($question).' ');
         $value = \trim(\fgets(STDIN));
 
         return '' === $value ? $default : $value;
@@ -124,7 +118,7 @@ final class SimpleCli implements \Countable
             $available[1] = 'N';
         }
 
-        $this->writeLn(\rtrim($question).' '.$this->text(\vsprintf('[%s/%s]', $available))->yellow());
+        $this->write(\rtrim($question).' '.$this->text(\vsprintf('[%s/%s]', $available))->yellow());
         $value = \trim(\fgets(STDIN));
 
         if ('' === $value) {
@@ -142,11 +136,12 @@ final class SimpleCli implements \Countable
 
     public function askHidden(string $question, $default = null)
     {
-        $this->writeLn(\rtrim($question).' ');
+        $this->write(\rtrim($question).' ');
         \system('stty -echo');
         $value = \trim(\fgets(STDIN));
         \system('stty echo');
 
+        $this->newLine();
         return '' === $value ? $default : $value;
     }
 
