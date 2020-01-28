@@ -28,37 +28,40 @@ final class SimpleCli implements \Countable
         return ($this->color)($string);
     }
 
-    public function success(string $message, bool $exit = false): void
+    public function success(string $message, bool $exit = false, bool $colorize = true): void
     {
-        $this->writeLn($this->text('[OK] '.$message)->white()->bold()->highlight('green'));
+        $this->writeLn($this->text('[OK] '.$message)->white()->bold()->highlight('green'), $colorize);
 
         if ($exit) {
             exit(0);
         }
     }
 
-    public function error(string $message, bool $exit = false): void
+    public function error(string $message, bool $exit = false, bool $colorize = true): void
     {
-        $this->writeLn($this->text('[Error] '.$message)->white()->bold()->highlight('red'));
+        $this->writeLn($this->text('[Error] '.$message)->white()->bold()->highlight('red'), $colorize);
 
         if ($exit) {
             exit(1);
         }
     }
 
-    public function warning(string $message): void
+    public function warning(string $message, bool $colorize = true): void
     {
-        $this->writeLn($this->text('[Warning] '.$message)->yellow()->bold());
+        $this->writeLn($this->text('[Warning] '.$message)->yellow()->bold(), $colorize);
     }
 
-    public function write(string $text): void
+    public function write(string $text, bool $colorize = true): void
     {
+        if ($colorize) {
+            $text = (string) $this->text($text)->colorize();
+        }
         echo $text;
     }
 
-    public function writeLn(string $text): void
+    public function writeLn(string $text, bool $colorize = true): void
     {
-        echo $text.\PHP_EOL;
+        $this->write($text.\PHP_EOL, $colorize);
     }
 
     public function newLine(int $nb = 1): void
@@ -102,7 +105,18 @@ final class SimpleCli implements \Countable
         return '' === $value ? $default : $value;
     }
 
-    public function confirm(string $question, $default = 'Y')
+    public function askHidden(string $question, $default = null)
+    {
+        $this->write(\rtrim($question).' ');
+        \system('stty -echo');
+        $value = \trim(\fgets(STDIN));
+        \system('stty echo');
+
+        $this->newLine();
+        return '' === $value ? $default : $value;
+    }
+
+    public function confirm(string $question, $default = 'Y'): bool
     {
         $yes = ['yes', 'on', 'y','YES', 'ON', 'Y', 1, '1', true];
         $no = ['no', 'off', 'n','NO', 'OFF', 'N', 0, '0', false];
@@ -132,17 +146,6 @@ final class SimpleCli implements \Countable
         }
 
         return \in_array($value, $yes, true);
-    }
-
-    public function askHidden(string $question, $default = null)
-    {
-        $this->write(\rtrim($question).' ');
-        \system('stty -echo');
-        $value = \trim(\fgets(STDIN));
-        \system('stty echo');
-
-        $this->newLine();
-        return '' === $value ? $default : $value;
     }
 
     private static function parse(array $input): array
