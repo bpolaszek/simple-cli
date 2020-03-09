@@ -77,9 +77,9 @@ final class SimpleCli implements \Countable
         return $this->aliases[$key] ?? $this->options[$key] ?? $default;
     }
 
-    public function getArgument($key, $default = null)
+    public function getArgument($index, $default = null)
     {
-        return $this->arguments[$key] ?? $default;
+        return $this->arguments[$index] ?? $default;
     }
 
     public function getCommand(): string
